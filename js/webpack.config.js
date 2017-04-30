@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const WebpackNotifierPlugin = require('webpack-notifier');
  
 module.exports = {
   entry: './src/index.js',
@@ -16,4 +17,10 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new WebpackNotifierPlugin({
+        title: 'Webpack',
+        alwaysNotify: true
+    }),
+  ]
 };

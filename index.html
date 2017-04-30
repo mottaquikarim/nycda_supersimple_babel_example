@@ -5,9 +5,9 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>VC Finder</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <title>!Yahoo</title>
+  <meta name="description" content="This is a weather app">
+  <meta name="author" content="NYCDA class + Taq">
 
   <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -19,8 +19,7 @@
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
   <link rel="stylesheet" href="css/app.css">
 
   <!-- Favicon
@@ -29,7 +28,32 @@
 
 </head>
 <body>
-    <div id="app"></div>
+    <div id="app">
+        <!-- Navbar goes here -->
+
+        <!-- Page Layout here -->
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="col s12 m4 l8">
+                      <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-blue-only">
+                          <div class="circle-clipper left">
+                            <div class="circle"></div>
+                          </div><div class="gap-patch">
+                            <div class="circle"></div>
+                          </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div><!-- col s9 -->
+
+        </div><!-- row -->
+           
+    </div>
     <script src="./js/dist/bundle.js"></script>
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
