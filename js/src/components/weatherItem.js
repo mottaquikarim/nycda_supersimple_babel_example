@@ -13,13 +13,41 @@ export function weatherItem(weatherData, container) {
 	const {description} = weather[0];
 	const weatherType = weather[0].main.toLowerCase();
 
+	const root = document.createElement('div');
+	const id = Math.floor(Math.random());
+	root.classList.add('weatherItem-root-' + id);
+	document.querySelector(container).appendChild(root);
+
 	let displayType = 'F';
+	render();
+
+	root.addEventListener('click', (e) => {
+		const {target} = e;
+		if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
+			toggleTempType();
+		}
+		render();
+	});
 
 
-	console.log(temp_max, temp_min, humidity, speed, description)
-	console.log(weatherData);
+	function toggleTempType() {
+		displayType = (displayType === 'F') ? 'C' : 'F';  		
 
-	const html = `
+	}
+
+	// let tempContainer = root.querySelector('.js-toggle-temp');
+	// console.log('about to set up click event')
+ //  	tempContainer.addEventListener('click', (e) => {
+
+ //  		displayType = (displayType === 'F') ? 'C' : 'F';  		
+ //  		render();
+ //  		console.log("CLICKED", displayType)
+ //  		console.log(tempContainer)
+ //  		tempContainer = root.querySelector('.js-toggle-temp');
+ //  	});
+
+  	function render() {
+  		const html = `
 <div class="row">
 	<div class="col s12 m6">
 		<div class="card">
@@ -37,16 +65,10 @@ export function weatherItem(weatherData, container) {
 		</div>
 	</div>
 </div>
-  	`;
+  		`;
 
-  	document.querySelector(container).innerHTML = html;
-
-  	const tempContainer = document.querySelector('.js-toggle-temp');
-  	tempContainer.addEventListener('click', (e) => {
-  		displayType = (displayType === 'F') ? 'C' : 'F';  		
-  		tempContainer.innerHTML = displayTemp(displayType)
-
-  	});
+  		root.innerHTML = html;
+  	}
 
   	function displayTemp(displayType) {
 		
@@ -67,7 +89,7 @@ export function weatherItem(weatherData, container) {
   			label = 'F';
   		}
 
-  		return `${maxTemp} &deg;${label}/ ${minTemp} &deg;${label}`
+  		return `<strong>${maxTemp} &deg;${label}</strong>/ <em>${minTemp} &deg;${label}</em>`
 
   	}
 

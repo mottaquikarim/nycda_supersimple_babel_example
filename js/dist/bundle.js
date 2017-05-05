@@ -79,8 +79,9 @@ var _weatherItem = __webpack_require__(4);
 
 (0, _weather.forecastByCity)('nyc, usa').then(function (data) {
     console.log(data);
-
-    (0, _weatherItem.weatherItem)(data.list[0], '#app');
+    data.list.forEach(function (dataItem) {
+        (0, _weatherItem.weatherItem)(dataItem, '#app');
+    });
 });
 
 /***/ }),
@@ -285,20 +286,43 @@ function weatherItem(weatherData, container) {
 
   var weatherType = weather[0].main.toLowerCase();
 
+  var root = document.createElement('div');
+  var id = Math.floor(Math.random());
+  root.classList.add('weatherItem-root-' + id);
+  document.querySelector(container).appendChild(root);
+
   var displayType = 'F';
+  render();
 
-  console.log(temp_max, temp_min, humidity, speed, description);
-  console.log(weatherData);
+  root.addEventListener('click', function (e) {
+    var target = e.target;
 
-  var html = '\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t';
-
-  document.querySelector(container).innerHTML = html;
-
-  var tempContainer = document.querySelector('.js-toggle-temp');
-  tempContainer.addEventListener('click', function (e) {
-    displayType = displayType === 'F' ? 'C' : 'F';
-    tempContainer.innerHTML = displayTemp(displayType);
+    if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
+      toggleTempType();
+    }
+    render();
   });
+
+  function toggleTempType() {
+    displayType = displayType === 'F' ? 'C' : 'F';
+  }
+
+  // let tempContainer = root.querySelector('.js-toggle-temp');
+  // console.log('about to set up click event')
+  //  	tempContainer.addEventListener('click', (e) => {
+
+  //  		displayType = (displayType === 'F') ? 'C' : 'F';  		
+  //  		render();
+  //  		console.log("CLICKED", displayType)
+  //  		console.log(tempContainer)
+  //  		tempContainer = root.querySelector('.js-toggle-temp');
+  //  	});
+
+  function render() {
+    var html = '\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
+
+    root.innerHTML = html;
+  }
 
   function displayTemp(displayType) {
 
@@ -318,7 +342,7 @@ function weatherItem(weatherData, container) {
       label = 'F';
     }
 
-    return maxTemp + ' &deg;' + label + '/ ' + minTemp + ' &deg;' + label;
+    return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
   }
 }
 
