@@ -75,13 +75,28 @@
 
 var _weather = __webpack_require__(1);
 
-var _weatherItem = __webpack_require__(4);
+var _weatherItemClassES = __webpack_require__(5);
 
 (0, _weather.forecastByCity)('nyc, usa').then(function (data) {
     console.log(data);
-    data.list.forEach(function (dataItem) {
-        (0, _weatherItem.weatherItem)(dataItem, '#app');
-    });
+    // data.list.forEach((dataItem) => {
+    //     const k = new WeatherItem(dataItem, '#app');
+    //     console.log(k)
+    // })
+
+    var k = new _weatherItemClassES.WeatherItem(data.list[0], '#app');
+    k.foo = 1;
+    k.bar = function bar() {
+        console.log('k is here, lol');
+    };
+    var l = new _weatherItemClassES.WeatherItem(data.list[1], '#app');
+    l.foo = 2;
+    var m = new _weatherItemClassES.WeatherItem(data.list[2], '#app');
+
+    _weatherItemClassES.WeatherItem.prototype.bar = function baz() {
+        console.log('here');
+    };
+    console.log(k, l, m);
 });
 
 /***/ }),
@@ -253,151 +268,79 @@ function factory(APIKEY, PROTOCOL, APIVERSION, BASEURL, APIKEYPROP) {
 }
 
 /***/ }),
-/* 4 */
+/* 4 */,
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-exports.weatherItem = weatherItem;
+exports.WeatherItem = WeatherItem;
 var images = {
-  'clouds': 'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif'
+	'clouds': 'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif'
 };
 
 var kToC = function kToC(temp) {
-  return temp - 273.15;
+	return temp - 273.15;
 };
 var cToF = function cToF(temp) {
-  return 1.8 * temp + 32;
+	return 1.8 * temp + 32;
 };
 
-function weatherItem(weatherData, container) {
-  var main = weatherData.main,
-      wind = weatherData.wind,
-      weather = weatherData.weather;
-  var temp_max = main.temp_max,
-      temp_min = main.temp_min,
-      humidity = main.humidity;
-  var speed = wind.speed;
-  var description = weather[0].description;
+function WeatherItem(weatherData, container) {
+	var main = weatherData.main,
+	    wind = weatherData.wind,
+	    weather = weatherData.weather;
 
-  var weatherType = weather[0].main.toLowerCase();
 
-  var root = document.createElement('div');
-  var id = Math.floor(Math.random());
-  root.classList.add('weatherItem-root-' + id);
-  document.querySelector(container).appendChild(root);
+	this.temp_max = main.temp_max;
+	this.temp_min = main.temp_min;
+	this.humidity = main.humidity;
 
-  var displayType = 'F';
-  render();
+	this.speed = wind.speed;
+	this.description = weather[0].description;
+	this.weatherType = weather[0].main.toLowerCase();
 
-  root.addEventListener('click', function (e) {
-    var target = e.target;
+	this.root = document.createElement('div');
+	var id = Math.floor(Math.random());
+	this.root.classList.add('weatherItem-root-' + id);
+	document.querySelector(container).appendChild(this.root);
 
-    if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
-      toggleTempType();
-    }
-    render();
-  });
-
-  function toggleTempType() {
-    displayType = displayType === 'F' ? 'C' : 'F';
-  }
-
-  // let tempContainer = root.querySelector('.js-toggle-temp');
-  // console.log('about to set up click event')
-  //  	tempContainer.addEventListener('click', (e) => {
-
-  //  		displayType = (displayType === 'F') ? 'C' : 'F';  		
-  //  		render();
-  //  		console.log("CLICKED", displayType)
-  //  		console.log(tempContainer)
-  //  		tempContainer = root.querySelector('.js-toggle-temp');
-  //  	});
-
-  function render() {
-    var html = '\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
-
-    root.innerHTML = html;
-  }
-
-  function displayTemp(displayType) {
-
-    var shouldConvertToCelcius = displayType === 'C';
-
-    var maxTemp = void 0;
-    var minTemp = void 0;
-    var label = void 0;
-
-    if (shouldConvertToCelcius) {
-      maxTemp = Math.floor(kToC(temp_max));
-      minTemp = Math.floor(kToC(temp_min));
-      label = 'C';
-    } else {
-      maxTemp = Math.floor(cToF(kToC(temp_max)));
-      minTemp = Math.floor(cToF(kToC(temp_min)));
-      label = 'F';
-    }
-
-    return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
-  }
+	this.displayType = 'F';
+	this.render();
 }
 
-/*
-  		if (tempContainer.classList.contains('js-f')) {
-	  		tempContainer.innerHTML = `
-${Math.floor(kToC(temp_max))} &deg;C/ ${Math.floor(kToC(temp_min))} &deg;C
-	  		`;
-	  		tempContainer.classList.remove('js-f');
-	  		tempContainer.classList.add('js-c');
-  		}
-  		else {
-  			tempContainer.innerHTML = `
-${Math.floor(cToF(kToC(temp_max)))} &deg;F/ ${Math.floor(cToF(kToC(temp_min)))} &deg;F
-  			`;
-  			tempContainer.classList.remove('js-c');
-	  		tempContainer.classList.add('js-f');
-  		}
-*/
+WeatherItem.prototype.toggleTempType = function toggleTempType() {};
 
-/*
-const contClasses = tempContainer.classList;
-  		const shouldConvertToCelcius = contClasses.contains('js-f');
+WeatherItem.prototype.render = function render() {
+	var displayTemp = this.displayTemp,
+	    displayType = this.displayType,
+	    root = this.root,
+	    description = this.description,
+	    weatherType = this.weatherType;
 
-  		let maxTemp;
-  		let minTemp;
-  		let label;
+	var html = '\n\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\tFOOBARR\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
 
-  		if (shouldConvertToCelcius) {
-  			maxTemp = Math.floor(kToC(temp_max));
-  			minTemp = Math.floor(kToC(temp_min));
-  			label = 'C';
-  			contClasses.remove('js-f');
-	  		contClasses.add('js-c');
-  		}
-  		else {
-  			maxTemp = Math.floor(cToF(kToC(temp_max)));
-  			minTemp = Math.floor(cToF(kToC(temp_min)));
-  			label = 'F';
-  			contClasses.remove('js-c');
-	  		contClasses.add('js-f');
-  		}
+	root.innerHTML = html;
+};
 
-  		tempContainer.innerHTML = `${maxTemp} &deg;${label}/ ${minTemp} &deg;${label}`
+function WeatherItemWithWind(weatherData, container) {
+	WeatherItem.call(this, weatherData, container);
+}
 
-*/
+WeatherItemWithWind.prototype = Object.create(WeatherItem.prototype);
 
 /*
 
-  		// if (displayType === 'F') {
-  		// 	displayType = 'C';
-  		// }
-  		// else {
-  		// 	displayType = 'F';
-  		// }
+const k = new WeatherItem();
+
+1. create an empty object, like this one: {}
+2. set the prototype property of our empty object {} to be the prototype of
+	our WeatherItem 
+3. return the empty object w/prototype attached
 */
 
 /***/ })
