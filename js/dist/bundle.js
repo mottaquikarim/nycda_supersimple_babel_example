@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,25 +73,15 @@
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
+var _weather = __webpack_require__(1);
+
+var _weatherItem = __webpack_require__(4);
+
+(0, _weather.forecastByCity)('nyc, usa').then(function (data) {
+    console.log(data);
+
+    (0, _weatherItem.weatherItem)(data.list[0], '#app');
 });
-var GET = exports.GET = function GET(url) {
-    return new Promise(function (resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('GET', url);
-        http.onload = function () {
-            try {
-                var data = JSON.parse(http.responseText);
-                resolve(data);
-            } catch (e) {
-                reject(e);
-            }
-        };
-        http.onerror = function () {};
-        http.send();
-    });
-};
 
 /***/ }),
 /* 1 */
@@ -103,62 +93,9 @@ var GET = exports.GET = function GET(url) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.searchByQuery = undefined;
-
-var _apiMapper = __webpack_require__(5);
-
-var giphy = (0, _apiMapper.factory)('dc6zaTOxFJmzC', 'https://', 'v1', 'api.giphy.com', 'api_key');
-
-var searchByQuery = exports.searchByQuery = function searchByQuery(q) {
-	var limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-	return giphy({ q: q, limit: limit }, 'gifs/search');
-};
-
-// import {GET} from '../ajax';
-
-// // define some constants
-// const APIKEY = 'dc6zaTOxFJmzC';
-// const PROTOCOL = 'https://';
-// const APIVERSION = 'v1';
-// const BASEURL = 'api.giphy.com';
-// const APIKEYPROP = 'api_key';
-
-// // for "private" functions that are not exported, we prepend them with a
-// // "_" character
-
-// // returns something like... http://api.openweathermap.org/data/[VERSION]
-// const _getBaseUrl = () => `${PROTOCOL}${BASEURL}/${APIVERSION}/`;
-
-// // ?lat=35 & lon=139 & appid=b1b15e88fa797225412429c1c50c122a1
-// const _getRequestParams = (params) => {
-//     const allParams = Object.assign({ [APIKEYPROP]: APIKEY }, params);
-//     const paramStr = Object.keys(allParams).map((currentKey) => {
-//         return `${currentKey}=${allParams[currentKey]}`;
-//     }).join('&');
-//     return '?' + paramStr;
-// }
-
-// // define api endpoints
-// const _apiEndpoint = (params, endpointName) => {
-//     return GET(_getBaseUrl() + endpointName + _getRequestParams(params));
-//     // lat, lon
-// }
-
-// export const searchByQuery = (q, limit = 1) => _apiEndpoint({q, limit}, 'gifs/search');
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 exports.callWeatherAPI = exports.forecastByCity = exports.weatherByCity = exports.weatherByZip = exports.weatherByLocation = undefined;
 
-var _apiMapper = __webpack_require__(5);
+var _apiMapper = __webpack_require__(3);
 
 var weather = (0, _apiMapper.factory)('1e519fc578fe456330a00b999dee641c', 'http://', 2.5, 'api.openweathermap.org/data', 'appid');
 
@@ -241,7 +178,7 @@ var callWeatherAPI = exports.callWeatherAPI = function callWeatherAPI(params, en
 // export const callWeatherAPI = (params, endpointName) => _apiEndpoint(params, endpointName);
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -250,84 +187,25 @@ var callWeatherAPI = exports.callWeatherAPI = function callWeatherAPI(params, en
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var getCurrentLocation = exports.getCurrentLocation = function getCurrentLocation() {
+var GET = exports.GET = function GET(url) {
     return new Promise(function (resolve, reject) {
-        var onSuccess = function onSuccess(coords) {
-            resolve(coords);
-        }; // onSuccess
-        var onFail = function onFail(error) {
-            switch (error.code) {
-                case error.PERMISSION_DENIED:
-                    reject("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    reject("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    reject("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    reject("An unknown error occurred.");
-                    break;
-                default:
-                    reject("An unknown error has occurred");
+        var http = new XMLHttpRequest();
+        http.open('GET', url);
+        http.onload = function () {
+            try {
+                var data = JSON.parse(http.responseText);
+                resolve(data);
+            } catch (e) {
+                reject(e);
             }
-        }; // onFail
-
-        navigator.geolocation.getCurrentPosition(onSuccess, onFail);
+        };
+        http.onerror = function () {};
+        http.send();
     });
-}; // getCurrentLocation
+};
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _locationServices = __webpack_require__(3);
-
-var _weather = __webpack_require__(2);
-
-var _giphy = __webpack_require__(1);
-
-var getLocation = (0, _locationServices.getCurrentLocation)();
-var getWeather = getLocation.then(function (results) {
-    var _ref = results.coords || {},
-        latitude = _ref.latitude,
-        longitude = _ref.longitude;
-
-    localStorage.setItem('savedCoords', JSON.stringify({ latitude: latitude, longitude: longitude }));
-
-    return (0, _weather.weatherByLocation)(latitude, longitude);
-});
-var getGiphy = getWeather.then(function (weatherData) {
-    var name = weatherData.name,
-        weather = weatherData.weather;
-
-    console.log(weatherData);
-    var description = weather[0].description;
-
-
-    console.log(weatherData);
-    return (0, _giphy.searchByQuery)(description + name);
-});
-
-Promise.all([getLocation, getWeather, getGiphy]).then(function (_ref2) {
-    var _ref3 = _slicedToArray(_ref2, 3),
-        location = _ref3[0],
-        weather = _ref3[1],
-        giphy = _ref3[2];
-
-    console.log(location, weather, giphy);
-}).catch(function (e) {
-    document.querySelector('#app').innerHTML = '<h1>' + e + '</h1>';
-});
-
-/***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -338,7 +216,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.factory = factory;
 
-var _ajax = __webpack_require__(0);
+var _ajax = __webpack_require__(2);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -372,6 +250,131 @@ function factory(APIKEY, PROTOCOL, APIVERSION, BASEURL, APIKEYPROP) {
 
 	return _apiEndpoint;
 }
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.weatherItem = weatherItem;
+var images = {
+  'clouds': 'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif'
+};
+
+var kToC = function kToC(temp) {
+  return temp - 273.15;
+};
+var cToF = function cToF(temp) {
+  return 1.8 * temp + 32;
+};
+
+function weatherItem(weatherData, container) {
+  var main = weatherData.main,
+      wind = weatherData.wind,
+      weather = weatherData.weather;
+  var temp_max = main.temp_max,
+      temp_min = main.temp_min,
+      humidity = main.humidity;
+  var speed = wind.speed;
+  var description = weather[0].description;
+
+  var weatherType = weather[0].main.toLowerCase();
+
+  var displayType = 'F';
+
+  console.log(temp_max, temp_min, humidity, speed, description);
+  console.log(weatherData);
+
+  var html = '\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t';
+
+  document.querySelector(container).innerHTML = html;
+
+  var tempContainer = document.querySelector('.js-toggle-temp');
+  tempContainer.addEventListener('click', function (e) {
+    displayType = displayType === 'F' ? 'C' : 'F';
+    tempContainer.innerHTML = displayTemp(displayType);
+  });
+
+  function displayTemp(displayType) {
+
+    var shouldConvertToCelcius = displayType === 'C';
+
+    var maxTemp = void 0;
+    var minTemp = void 0;
+    var label = void 0;
+
+    if (shouldConvertToCelcius) {
+      maxTemp = Math.floor(kToC(temp_max));
+      minTemp = Math.floor(kToC(temp_min));
+      label = 'C';
+    } else {
+      maxTemp = Math.floor(cToF(kToC(temp_max)));
+      minTemp = Math.floor(cToF(kToC(temp_min)));
+      label = 'F';
+    }
+
+    return maxTemp + ' &deg;' + label + '/ ' + minTemp + ' &deg;' + label;
+  }
+}
+
+/*
+  		if (tempContainer.classList.contains('js-f')) {
+	  		tempContainer.innerHTML = `
+${Math.floor(kToC(temp_max))} &deg;C/ ${Math.floor(kToC(temp_min))} &deg;C
+	  		`;
+	  		tempContainer.classList.remove('js-f');
+	  		tempContainer.classList.add('js-c');
+  		}
+  		else {
+  			tempContainer.innerHTML = `
+${Math.floor(cToF(kToC(temp_max)))} &deg;F/ ${Math.floor(cToF(kToC(temp_min)))} &deg;F
+  			`;
+  			tempContainer.classList.remove('js-c');
+	  		tempContainer.classList.add('js-f');
+  		}
+*/
+
+/*
+const contClasses = tempContainer.classList;
+  		const shouldConvertToCelcius = contClasses.contains('js-f');
+
+  		let maxTemp;
+  		let minTemp;
+  		let label;
+
+  		if (shouldConvertToCelcius) {
+  			maxTemp = Math.floor(kToC(temp_max));
+  			minTemp = Math.floor(kToC(temp_min));
+  			label = 'C';
+  			contClasses.remove('js-f');
+	  		contClasses.add('js-c');
+  		}
+  		else {
+  			maxTemp = Math.floor(cToF(kToC(temp_max)));
+  			minTemp = Math.floor(cToF(kToC(temp_min)));
+  			label = 'F';
+  			contClasses.remove('js-c');
+	  		contClasses.add('js-f');
+  		}
+
+  		tempContainer.innerHTML = `${maxTemp} &deg;${label}/ ${minTemp} &deg;${label}`
+
+*/
+
+/*
+
+  		// if (displayType === 'F') {
+  		// 	displayType = 'C';
+  		// }
+  		// else {
+  		// 	displayType = 'F';
+  		// }
+*/
 
 /***/ })
 /******/ ]);
