@@ -1,10 +1,5 @@
 const images = {
-	'rain': [
-    'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif',
-    'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif',
-    'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif',
-    'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif'
-  ]
+	'clouds': 'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif'
 }
 
 const kToC = (temp) => temp - 273.15;
@@ -24,7 +19,6 @@ export function weatherItem(weatherData, container) {
 	document.querySelector(container).appendChild(root);
 
 	let displayType = 'F';
-  let currentImageIndex = 0;
 	render();
 
 	root.addEventListener('click', (e) => {
@@ -32,9 +26,6 @@ export function weatherItem(weatherData, container) {
 		if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
 			toggleTempType();
 		}
-    if (target.classList.contains('js-main-image') || target.closest('.js-main-image')) {
-      updateImageIndex();
-    }
 		render();
 	});
 
@@ -44,17 +35,16 @@ export function weatherItem(weatherData, container) {
 
 	}
 
-  function updateImageIndex() {
-    // Alternative "clever" way
-    // currentImageIndex = ++currentImageIndex % images[weatherType].length;
+	// let tempContainer = root.querySelector('.js-toggle-temp');
+	// console.log('about to set up click event')
+ //  	tempContainer.addEventListener('click', (e) => {
 
-    // clearer way of approaching
-    currentImageIndex++;
-
-    if (currentImageIndex === images[weatherType].length) {
-      currentImageIndex = 0;
-    }
-  }
+ //  		displayType = (displayType === 'F') ? 'C' : 'F';  		
+ //  		render();
+ //  		console.log("CLICKED", displayType)
+ //  		console.log(tempContainer)
+ //  		tempContainer = root.querySelector('.js-toggle-temp');
+ //  	});
 
   	function render() {
   		const html = `
@@ -62,7 +52,7 @@ export function weatherItem(weatherData, container) {
 	<div class="col s12 m6">
 		<div class="card">
 			<div class="card-image">
-				<img class="js-main-image" src="${images[weatherType][currentImageIndex]}">
+				<img src="${images[weatherType]}">
 				<span class="card-title js-toggle-temp" style="color: black;">
 					${displayTemp(displayType)}
 				</span>
@@ -104,3 +94,60 @@ export function weatherItem(weatherData, container) {
   	}
 
 }
+
+/*
+  		if (tempContainer.classList.contains('js-f')) {
+	  		tempContainer.innerHTML = `
+${Math.floor(kToC(temp_max))} &deg;C/ ${Math.floor(kToC(temp_min))} &deg;C
+	  		`;
+	  		tempContainer.classList.remove('js-f');
+	  		tempContainer.classList.add('js-c');
+  		}
+  		else {
+  			tempContainer.innerHTML = `
+${Math.floor(cToF(kToC(temp_max)))} &deg;F/ ${Math.floor(cToF(kToC(temp_min)))} &deg;F
+  			`;
+  			tempContainer.classList.remove('js-c');
+	  		tempContainer.classList.add('js-f');
+  		}
+*/
+
+/*
+const contClasses = tempContainer.classList;
+  		const shouldConvertToCelcius = contClasses.contains('js-f');
+
+  		let maxTemp;
+  		let minTemp;
+  		let label;
+
+  		if (shouldConvertToCelcius) {
+  			maxTemp = Math.floor(kToC(temp_max));
+  			minTemp = Math.floor(kToC(temp_min));
+  			label = 'C';
+  			contClasses.remove('js-f');
+	  		contClasses.add('js-c');
+  		}
+  		else {
+  			maxTemp = Math.floor(cToF(kToC(temp_max)));
+  			minTemp = Math.floor(cToF(kToC(temp_min)));
+  			label = 'F';
+  			contClasses.remove('js-c');
+	  		contClasses.add('js-f');
+  		}
+
+  		tempContainer.innerHTML = `${maxTemp} &deg;${label}/ ${minTemp} &deg;${label}`
+
+*/
+
+/*
+
+  		// if (displayType === 'F') {
+  		// 	displayType = 'C';
+  		// }
+  		// else {
+  		// 	displayType = 'F';
+  		// }
+*/
+
+
+

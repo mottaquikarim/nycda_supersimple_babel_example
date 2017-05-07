@@ -63,11 +63,29 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _weather = __webpack_require__(1);
+
+var _weatherItem = __webpack_require__(4);
+
+(0, _weather.forecastByCity)('nyc, usa').then(function (data) {
+    console.log(data);
+    data.list.forEach(function (dataItem) {
+        (0, _weatherItem.weatherItem)(dataItem, '#app');
+    });
+});
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -161,7 +179,6 @@ var callWeatherAPI = exports.callWeatherAPI = function callWeatherAPI(params, en
 // export const callWeatherAPI = (params, endpointName) => _apiEndpoint(params, endpointName);
 
 /***/ }),
-/* 1 */,
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -242,153 +259,146 @@ function factory(APIKEY, PROTOCOL, APIVERSION, BASEURL, APIKEYPROP) {
 "use strict";
 
 
-var _weather = __webpack_require__(0);
-
-var _weatherItem_Constructor = __webpack_require__(5);
-
-(0, _weather.forecastByCity)('nyc, usa').then(function (data) {
-    console.log(data);
-    data.list.forEach(function (dataItem, index) {
-        if (index === 0) {
-            (0, _weatherItem_Constructor.weatherItem)(dataItem, '#app');
-        }
-    });
-});
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 exports.weatherItem = weatherItem;
 var images = {
-	'rain': ['https://media.giphy.com/media/mno6BJfy8USic/giphy.gif', 'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif', 'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif', 'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif']
+  'clouds': 'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif'
 };
 
 var kToC = function kToC(temp) {
-	return temp - 273.15;
+  return temp - 273.15;
 };
 var cToF = function cToF(temp) {
-	return 1.8 * temp + 32;
+  return 1.8 * temp + 32;
 };
 
-function WeatherItem(weatherData, container) {
-	var main = weatherData.main,
-	    wind = weatherData.wind,
-	    weather = weatherData.weather;
-	var temp_max = main.temp_max,
-	    temp_min = main.temp_min,
-	    humidity = main.humidity;
-	var speed = wind.speed;
-	var description = weather[0].description;
+function weatherItem(weatherData, container) {
+  var main = weatherData.main,
+      wind = weatherData.wind,
+      weather = weatherData.weather;
+  var temp_max = main.temp_max,
+      temp_min = main.temp_min,
+      humidity = main.humidity;
+  var speed = wind.speed;
+  var description = weather[0].description;
 
-	var weatherType = weather[0].main.toLowerCase();
+  var weatherType = weather[0].main.toLowerCase();
 
-	var root = document.createElement('div');
-	var id = Math.floor(Math.random() * 1000) + Date.now();
-	root.classList.add('weatherItem-root-' + id);
-	document.querySelector(container).appendChild(root);
+  var root = document.createElement('div');
+  var id = Math.floor(Math.random());
+  root.classList.add('weatherItem-root-' + id);
+  document.querySelector(container).appendChild(root);
 
-	this.temp_max = temp_max;
-	this.temp_min = temp_min;
-	this.humidity = humidity;
-	this.speed = speed;
-	this.description = description;
-	this.weatherType = weatherType;
-	this.displayType = 'F';
-	this.currentImageIndex = 0;
-	this.root = root;
+  var displayType = 'F';
+  render();
 
-	this.render();
-	this.bindEvents();
+  root.addEventListener('click', function (e) {
+    var target = e.target;
+
+    if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
+      toggleTempType();
+    }
+    render();
+  });
+
+  function toggleTempType() {
+    displayType = displayType === 'F' ? 'C' : 'F';
+  }
+
+  // let tempContainer = root.querySelector('.js-toggle-temp');
+  // console.log('about to set up click event')
+  //  	tempContainer.addEventListener('click', (e) => {
+
+  //  		displayType = (displayType === 'F') ? 'C' : 'F';  		
+  //  		render();
+  //  		console.log("CLICKED", displayType)
+  //  		console.log(tempContainer)
+  //  		tempContainer = root.querySelector('.js-toggle-temp');
+  //  	});
+
+  function render() {
+    var html = '\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img src="' + images[weatherType] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
+
+    root.innerHTML = html;
+  }
+
+  function displayTemp(displayType) {
+
+    var shouldConvertToCelcius = displayType === 'C';
+
+    var maxTemp = void 0;
+    var minTemp = void 0;
+    var label = void 0;
+
+    if (shouldConvertToCelcius) {
+      maxTemp = Math.floor(kToC(temp_max));
+      minTemp = Math.floor(kToC(temp_min));
+      label = 'C';
+    } else {
+      maxTemp = Math.floor(cToF(kToC(temp_max)));
+      minTemp = Math.floor(cToF(kToC(temp_min)));
+      label = 'F';
+    }
+
+    return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
+  }
 }
 
-WeatherItem.prototype.render = function () {
-	var root = this.root,
-	    displayTemp = this.displayTemp,
-	    displayType = this.displayType,
-	    weatherType = this.weatherType,
-	    currentImageIndex = this.currentImageIndex,
-	    description = this.description;
+/*
+  		if (tempContainer.classList.contains('js-f')) {
+	  		tempContainer.innerHTML = `
+${Math.floor(kToC(temp_max))} &deg;C/ ${Math.floor(kToC(temp_min))} &deg;C
+	  		`;
+	  		tempContainer.classList.remove('js-f');
+	  		tempContainer.classList.add('js-c');
+  		}
+  		else {
+  			tempContainer.innerHTML = `
+${Math.floor(cToF(kToC(temp_max)))} &deg;F/ ${Math.floor(cToF(kToC(temp_min)))} &deg;F
+  			`;
+  			tempContainer.classList.remove('js-c');
+	  		tempContainer.classList.add('js-f');
+  		}
+*/
 
+/*
+const contClasses = tempContainer.classList;
+  		const shouldConvertToCelcius = contClasses.contains('js-f');
 
-	var html = '\n\t}\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img class="js-main-image" src="' + images[weatherType][currentImageIndex] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + this.displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
+  		let maxTemp;
+  		let minTemp;
+  		let label;
 
-	root.innerHTML = html;
-};
-WeatherItem.prototype.bindEvents = function bindEvents() {
-	var _this = this;
+  		if (shouldConvertToCelcius) {
+  			maxTemp = Math.floor(kToC(temp_max));
+  			minTemp = Math.floor(kToC(temp_min));
+  			label = 'C';
+  			contClasses.remove('js-f');
+	  		contClasses.add('js-c');
+  		}
+  		else {
+  			maxTemp = Math.floor(cToF(kToC(temp_max)));
+  			minTemp = Math.floor(cToF(kToC(temp_min)));
+  			label = 'F';
+  			contClasses.remove('js-c');
+	  		contClasses.add('js-f');
+  		}
 
-	var root = this.root,
-	    toggleTempType = this.toggleTempType,
-	    updateImageIndex = this.updateImageIndex,
-	    render = this.render;
+  		tempContainer.innerHTML = `${maxTemp} &deg;${label}/ ${minTemp} &deg;${label}`
 
+*/
 
-	root.addEventListener('click', function (e) {
-		var target = e.target;
+/*
 
-		if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
-			_this.toggleTempType();
-		}
-		if (target.classList.contains('js-main-image') || target.closest('.js-main-image')) {
-			_this.updateImageIndex();
-		}
-		_this.render();
-	});
-};
-
-WeatherItem.prototype.toggleTempType = function toggleTempType() {
-	this.displayType = this.displayType === 'F' ? 'C' : 'F';
-};
-
-WeatherItem.prototype.updateImageIndex = function updateImageIndex() {
-	// Alternative "clever" way
-	// currentImageIndex = ++currentImageIndex % images[weatherType].length;
-
-
-	// clearer way of approaching
-	this.currentImageIndex++;
-
-	if (this.currentImageIndex === images[this.weatherType].length) {
-		this.currentImageIndex = 0;
-	}
-};
-
-WeatherItem.prototype.displayTemp = function displayTemp(displayType) {
-	var shouldConvertToCelcius = displayType === 'C';
-
-	var maxTemp = void 0;
-	var minTemp = void 0;
-	var label = void 0;
-
-	if (shouldConvertToCelcius) {
-		console.log(this);
-		maxTemp = Math.floor(kToC(this.temp_max));
-		minTemp = Math.floor(kToC(this.temp_min));
-		label = 'C';
-	} else {
-		console.log(this);
-		maxTemp = Math.floor(cToF(kToC(this.temp_max)));
-		minTemp = Math.floor(cToF(kToC(this.temp_min)));
-		label = 'F';
-	}
-
-	return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
-};
-
-function weatherItem() {
-	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-		args[_key] = arguments[_key];
-	}
-
-	return new (Function.prototype.bind.apply(WeatherItem, [null].concat(args)))();
-}
+  		// if (displayType === 'F') {
+  		// 	displayType = 'C';
+  		// }
+  		// else {
+  		// 	displayType = 'F';
+  		// }
+*/
 
 /***/ })
 /******/ ]);
