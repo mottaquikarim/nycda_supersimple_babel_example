@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -242,32 +242,19 @@ function factory(APIKEY, PROTOCOL, APIVERSION, BASEURL, APIKEYPROP) {
 "use strict";
 
 
-var _weather = __webpack_require__(0);
-
-var _weatherItem_Constructor = __webpack_require__(5);
-
-(0, _weather.forecastByCity)('nyc, usa').then(function (data) {
-    console.log(data);
-    data.list.forEach(function (dataItem, index) {
-        if (index === 0) {
-            (0, _weatherItem_Constructor.weatherItem)(dataItem, '#app');
-        }
-    });
-});
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports.weatherItem = weatherItem;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var images = {
-	'rain': ['https://media.giphy.com/media/mno6BJfy8USic/giphy.gif', 'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif', 'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif', 'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif']
+	'rain': ['https://media.giphy.com/media/mno6BJfy8USic/giphy.gif', 'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif', 'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif', 'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif'],
+	'clouds': ['https://media.giphy.com/media/mno6BJfy8USic/giphy.gif', 'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif', 'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif', 'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif']
 };
 
 var kToC = function kToC(temp) {
@@ -277,110 +264,136 @@ var cToF = function cToF(temp) {
 	return 1.8 * temp + 32;
 };
 
-function WeatherItem(weatherData, container) {
-	var main = weatherData.main,
-	    wind = weatherData.wind,
-	    weather = weatherData.weather;
-	var temp_max = main.temp_max,
-	    temp_min = main.temp_min,
-	    humidity = main.humidity;
-	var speed = wind.speed;
-	var description = weather[0].description;
+var WeatherItem = exports.WeatherItem = function () {
+	function WeatherItem(weatherData, container) {
+		_classCallCheck(this, WeatherItem);
 
-	var weatherType = weather[0].main.toLowerCase();
+		var main = weatherData.main,
+		    wind = weatherData.wind,
+		    weather = weatherData.weather;
+		var temp_max = main.temp_max,
+		    temp_min = main.temp_min,
+		    humidity = main.humidity;
+		var speed = wind.speed;
+		var description = weather[0].description;
 
-	var root = document.createElement('div');
-	var id = Math.floor(Math.random() * 1000) + Date.now();
-	root.classList.add('weatherItem-root-' + id);
-	document.querySelector(container).appendChild(root);
+		var weatherType = weather[0].main.toLowerCase();
 
-	this.temp_max = temp_max;
-	this.temp_min = temp_min;
-	this.humidity = humidity;
-	this.speed = speed;
-	this.description = description;
-	this.weatherType = weatherType;
-	this.displayType = 'F';
-	this.currentImageIndex = 0;
-	this.root = root;
+		var root = document.createElement('div');
+		var id = Math.floor(Math.random() * 1000) + Date.now();
+		root.classList.add('weatherItem-root-' + id);
+		console.log(container, weatherType);
+		document.querySelector(container).appendChild(root);
 
-	this.render();
-	this.bindEvents();
-}
-
-WeatherItem.prototype.render = function () {
-	var root = this.root,
-	    displayTemp = this.displayTemp,
-	    displayType = this.displayType,
-	    weatherType = this.weatherType,
-	    currentImageIndex = this.currentImageIndex,
-	    description = this.description;
-
-
-	var html = '\n\t}\n<div class="row">\n\t<div class="col s12 m6">\n\t\t<div class="card">\n\t\t\t<div class="card-image">\n\t\t\t\t<img class="js-main-image" src="' + images[weatherType][currentImageIndex] + '">\n\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t' + this.displayTemp(displayType) + '\n\t\t\t\t</span>\n\t\t\t</div>\n\t\t\t<div class="card-content">\n\t\t\t\t<h1>\n\t\t\t\t\t' + description + '\n\t\t\t\t</h1>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n  \t\t';
-
-	root.innerHTML = html;
-};
-WeatherItem.prototype.bindEvents = function bindEvents() {
-	var _this = this;
-
-	var root = this.root,
-	    toggleTempType = this.toggleTempType,
-	    updateImageIndex = this.updateImageIndex,
-	    render = this.render;
-
-
-	root.addEventListener('click', function (e) {
-		var target = e.target;
-
-		if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
-			_this.toggleTempType();
-		}
-		if (target.classList.contains('js-main-image') || target.closest('.js-main-image')) {
-			_this.updateImageIndex();
-		}
-		_this.render();
-	});
-};
-
-WeatherItem.prototype.toggleTempType = function toggleTempType() {
-	this.displayType = this.displayType === 'F' ? 'C' : 'F';
-};
-
-WeatherItem.prototype.updateImageIndex = function updateImageIndex() {
-	// Alternative "clever" way
-	// currentImageIndex = ++currentImageIndex % images[weatherType].length;
-
-
-	// clearer way of approaching
-	this.currentImageIndex++;
-
-	if (this.currentImageIndex === images[this.weatherType].length) {
+		this.temp_max = temp_max;
+		this.temp_min = temp_min;
+		this.humidity = humidity;
+		this.speed = speed;
+		this.description = description;
+		this.weatherType = weatherType;
+		this.displayType = 'F';
 		this.currentImageIndex = 0;
-	}
-};
+		this.root = root;
 
-WeatherItem.prototype.displayTemp = function displayTemp(displayType) {
-	var shouldConvertToCelcius = displayType === 'C';
-
-	var maxTemp = void 0;
-	var minTemp = void 0;
-	var label = void 0;
-
-	if (shouldConvertToCelcius) {
-		console.log(this);
-		maxTemp = Math.floor(kToC(this.temp_max));
-		minTemp = Math.floor(kToC(this.temp_min));
-		label = 'C';
-	} else {
-		console.log(this);
-		maxTemp = Math.floor(cToF(kToC(this.temp_max)));
-		minTemp = Math.floor(cToF(kToC(this.temp_min)));
-		label = 'F';
+		this.render();
+		this.bindEvents();
 	}
 
-	return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
-};
+	_createClass(WeatherItem, [{
+		key: 'renderBody',
+		value: function renderBody() {
+			var extra = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+			var root = this.root,
+			    displayTemp = this.displayTemp,
+			    displayType = this.displayType,
+			    weatherType = this.weatherType,
+			    currentImageIndex = this.currentImageIndex,
+			    description = this.description;
+
+
+			return '\n\t<div class="row">\n\t\t<div class="col s12 m6">\n\t\t\t<div class="card">\n\t\t\t\t<div class="card-image">\n\t\t\t\t\t<img class="js-main-image" src="' + this.renderCurrentImage() + '">\n\t\t\t\t\t<span class="card-title js-toggle-temp" style="color: black;">\n\t\t\t\t\t\t' + this.displayTemp(displayType) + '\n\t\t\t\t\t</span>\n\t\t\t\t</div>\n\t\t\t\t<div class="card-content">\n\t\t\t\t\t<h1>\n\t\t\t\t\t\t' + description + '\n\t\t\t\t\t</h1>\n\t\t\t\t</div>\n\t\t\t\t' + extra + '\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t  \t\t';
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			this.root.innerHTML = this.renderBody();
+		}
+	}, {
+		key: 'bindEvents',
+		value: function bindEvents() {
+			var _this = this;
+
+			var root = this.root,
+			    toggleTempType = this.toggleTempType,
+			    updateImageIndex = this.updateImageIndex,
+			    render = this.render;
+
+
+			root.addEventListener('click', function (e) {
+				var target = e.target;
+
+				if (target.classList.contains('js-toggle-temp') || target.closest('.js-toggle-temp')) {
+					_this.toggleTempType();
+				}
+				if (target.classList.contains('js-main-image') || target.closest('.js-main-image')) {
+					_this.updateImageIndex();
+				}
+				_this.render();
+			});
+		}
+	}, {
+		key: 'renderCurrentImage',
+		value: function renderCurrentImage() {
+			var weatherType = images[this.weatherType];
+			if (typeof weatherType === "undefined") return "https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif";
+			return images[this.weatherType][this.currentImageIndex];
+		}
+	}, {
+		key: 'toggleTempType',
+		value: function toggleTempType() {
+			this.displayType = this.displayType === 'F' ? 'C' : 'F';
+		}
+	}, {
+		key: 'updateImageIndex',
+		value: function updateImageIndex() {
+			// Alternative "clever" way
+			// currentImageIndex = ++currentImageIndex % images[weatherType].length;
+
+
+			// clearer way of approaching
+			this.currentImageIndex++;
+
+			if (this.currentImageIndex === images[this.weatherType].length) {
+				this.currentImageIndex = 0;
+			}
+		}
+	}, {
+		key: 'displayTemp',
+		value: function displayTemp(displayType) {
+			var shouldConvertToCelcius = displayType === 'C';
+
+			var maxTemp = void 0;
+			var minTemp = void 0;
+			var label = void 0;
+
+			if (shouldConvertToCelcius) {
+				console.log(this);
+				maxTemp = Math.floor(kToC(this.temp_max));
+				minTemp = Math.floor(kToC(this.temp_min));
+				label = 'C';
+			} else {
+				console.log(this);
+				maxTemp = Math.floor(cToF(kToC(this.temp_max)));
+				minTemp = Math.floor(cToF(kToC(this.temp_min)));
+				label = 'F';
+			}
+
+			return '<strong>' + maxTemp + ' &deg;' + label + '</strong>/ <em>' + minTemp + ' &deg;' + label + '</em>';
+		}
+	}]);
+
+	return WeatherItem;
+}();
 
 function weatherItem() {
 	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
@@ -388,6 +401,101 @@ function weatherItem() {
 	}
 
 	return new (Function.prototype.bind.apply(WeatherItem, [null].concat(args)))();
+}
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _weather = __webpack_require__(0);
+
+var _WeatherForecast = __webpack_require__(8);
+
+(0, _weather.forecastByCity)('nyc, usa').then(function (data) {
+    console.log(data);
+    var dataToDisplay = data.list.filter(function (dataItem, index) {
+        return index % 8 === 0;
+    });
+
+    (0, _WeatherForecast.weatherForecast)(dataToDisplay, '#app');
+    // console.log(dataToDisplay)
+});
+
+(0, _weather.forecastByCity)('atlanta, usa').then(function (data) {
+    console.log(data);
+    var dataToDisplay = data.list.filter(function (dataItem, index) {
+        return index % 8 === 0;
+    });
+
+    (0, _WeatherForecast.weatherForecast)(dataToDisplay, '#app');
+    // console.log(dataToDisplay)
+});
+
+/***/ }),
+/* 6 */,
+/* 7 */,
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.weatherForecast = weatherForecast;
+
+var _weatherItem_Constructor_ES = __webpack_require__(4);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var WeatherForecast = function () {
+	function WeatherForecast(data, container) {
+		_classCallCheck(this, WeatherForecast);
+
+		var root = document.createElement('div');
+		var id = Math.floor(Math.random() * 1000) + Date.now();
+		root.classList.add('weatherItem-root-' + id);
+		document.querySelector(container).appendChild(root);
+
+		this.data = data;
+		this.root = root;
+		this.id = id;
+
+		this.render();
+
+		data.forEach(function (currentWeather) {
+			new _weatherItem_Constructor_ES.WeatherItem(currentWeather, '.weatherItem-root-' + id + ' .js-wrapper');
+		});
+	}
+
+	_createClass(WeatherForecast, [{
+		key: 'render',
+		value: function render() {
+			var data = this.data,
+			    root = this.root,
+			    id = this.id;
+
+
+			root.innerHTML = '\n\n<div class="container">\n\t<div class="row js-wrapper">\n\t</div>  \n</div>\n\n\t\t';
+		}
+	}]);
+
+	return WeatherForecast;
+}();
+
+function weatherForecast() {
+	for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+		args[_key] = arguments[_key];
+	}
+
+	return new (Function.prototype.bind.apply(WeatherForecast, [null].concat(args)))();
 }
 
 /***/ })

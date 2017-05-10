@@ -1,10 +1,16 @@
 const images = {
 	'rain': [
-    'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif',
-    'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif',
-    'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif',
-    'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif'
-  ]
+	    'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif',
+	    'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif',
+	    'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif',
+	    'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif'
+	  ],
+	 'clouds': [
+	    'https://media.giphy.com/media/mno6BJfy8USic/giphy.gif',
+	    'https://media.giphy.com/media/gRnSZSRzOJeG4/giphy.gif',
+	    'https://media.giphy.com/media/oSaLJmbUgZQm4/200w_d.gif',
+	    'https://media.giphy.com/media/3oriO1WJifFDP2gRYA/giphy-downsized.gif'
+	  ],
 }
 
 const kToC = (temp) => temp - 273.15;
@@ -48,8 +54,8 @@ WeatherItem.prototype.render = function() {
 		description,
 	} = this;
 
+
   		const html = `
-	}
 <div class="row">
 	<div class="col s12 m6">
 		<div class="card">
